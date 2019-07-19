@@ -13,7 +13,7 @@ const int reverseTime = 400;
 const int reverseTurnTime = 325;
 
 const int turnTimeShort = 195;
-const int turnTimeLong = 400;
+const int turnTimeLong = 410;
 
 //a list of states that this SM uses:
 enum {
