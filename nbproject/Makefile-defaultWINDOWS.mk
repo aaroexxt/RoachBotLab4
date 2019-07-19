@@ -102,8 +102,8 @@ ifneq ($(INFORMATION_MESSAGE), )
 endif
 	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/RoachBotLab4.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 	@echo "--------------------------------------"
-	@echo "User defined post-build step: [cp ${ImagePath} .]"
-	@cp ${ImagePath} .
+	@echo "User defined post-build step: [copy ${ImagePath} . /Y]"
+	@copy ${ImagePath} . /Y
 	@echo "--------------------------------------"
 
 MP_PROCESSOR_OPTION=32MX340F512H
@@ -269,7 +269,7 @@ endif
 .pre:
 	@echo "--------------------------------------"
 	@echo "User defined pre-build step: [del ${ImageName} 2>nul]"
-	@rm ~/Desktop/Code/RoachBotLab4/${ImageName} || echo "Couldn't delete"
+	@del ${ImageName} 2>nul
 	@echo "--------------------------------------"
 
 # Subprojects

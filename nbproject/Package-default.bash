@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/COSMOS_State_Machines.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=COSMOS_State_Machines.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=cosmosstatemachines.x/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/RoachBotLab4.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=RoachBotLab4.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=roachbotlab4/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/cosmosstatemachines.x/bin
+makeDirectory ${TMPDIR}/roachbotlab4/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/cosmosstatemachines.x.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/roachbotlab4.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/cosmosstatemachines.x.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/roachbotlab4.tar *
 checkReturnCode
 
 # Cleanup

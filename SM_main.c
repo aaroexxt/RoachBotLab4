@@ -97,7 +97,8 @@ int main(void)
             this_event = NO_EVENT;
 
         }
-            CheckStallCount();
+        
+        Run_CheckStallCount();
         
 
     }

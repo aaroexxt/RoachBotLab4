@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=COSMOS_State_Machines.X
+PROJECTNAME=RoachBotLab4
 
 # Active Configuration
 DEFAULTCONF=default
