@@ -6,14 +6,24 @@
 #include "timers.h"
 
 //Constants
+/*MAZE 1 EASY WORKING CONSTANTS*/
+//const int RightMotorSpeed = 85;
+//const int LeftMotorSpeed = 85;
+//const int stallThreshold = 10000;
+//const int reverseTime = 400;
+//const int reverseTurnTime = 325;
+//
+//const int turnTimeShort = 195;
+//const int turnTimeLong = 410;
+
 const int RightMotorSpeed = 85;
 const int LeftMotorSpeed = 85;
-const int stallThreshold = 1500;
+const int stallThreshold = 10000;
 const int reverseTime = 400;
-const int reverseTurnTime = 325;
+const int reverseTurnTime = 400;
 
-const int turnTimeShort = 195;
-const int turnTimeLong = 410;
+const int turnTimeShort = 300;
+const int turnTimeLong = 450;
 
 //a list of states that this SM uses:
 enum {
@@ -33,7 +43,7 @@ enum {
     Left,
     Right
 };
-int lastDirection = Left;
+int lastBumper = Left;
 /* This function initializes the roach state machine.
  * At a minimum, this requires setting the first state.
  * Also, execute any actions associated with initializing the SM 
@@ -72,7 +82,7 @@ void Run_CheckStallCount() {
 void Run_BumperPressed() { //code that runs when bumper is pressed
     current_state = WaitTurn;
     
-    if (turnCounter <= 30) { //makes a longer turn every 30 just in case bot is stuck
+    if (turnCounter <= 17) { //makes a longer turn every 30 just in case bot is stuck
         TIMERS_InitTimer(0, turnTimeShort);
     } else {
         TIMERS_InitTimer(0, turnTimeLong);
@@ -81,6 +91,15 @@ void Run_BumperPressed() { //code that runs when bumper is pressed
     turnCounter++;
 }
 
+void Run_TurnOffset(){
+    if (lastBumper == Right) {
+        Roach_LeftMtrSpeed(LeftMotorSpeed+10);
+        Roach_RightMtrSpeed(RightMotorSpeed);
+    } else {
+        Roach_LeftMtrSpeed(LeftMotorSpeed);
+        Roach_RightMtrSpeed(RightMotorSpeed+7);
+    }
+}
 /* 
  * @briefThis function feeds newly detected events to the roach state machine.
  * @param event:  The most recently detected event
@@ -98,16 +117,16 @@ void Run_RoachStateMachine(Event event)
                     Roach_RightMtrSpeed(0);
                     break;
                 case FRONT_RIGHT_BUMP_PRESSED:
-                    Roach_LeftMtrSpeed( -100);
-                    Roach_RightMtrSpeed(100);
-                    lastDirection = Left;
+                    Roach_LeftMtrSpeed( -LeftMotorSpeed);
+                    Roach_RightMtrSpeed(RightMotorSpeed);
+                    lastBumper = Left;
                     
                     Run_BumperPressed();
                     break;
                 case FRONT_LEFT_BUMP_PRESSED:
-                    Roach_LeftMtrSpeed(100);
-                    Roach_RightMtrSpeed(-100);
-                    lastDirection = Right;
+                    Roach_LeftMtrSpeed(LeftMotorSpeed);
+                    Roach_RightMtrSpeed(-RightMotorSpeed);
+                    lastBumper = Right;
 
                     Run_BumperPressed();
                     break;
@@ -124,8 +143,7 @@ void Run_RoachStateMachine(Event event)
                 case NAV_TIMER_EXPIRED:
                 case REAR_RIGHT_BUMP_PRESSED:
                 case REAR_LEFT_BUMP_PRESSED:
-                    Roach_LeftMtrSpeed(LeftMotorSpeed);
-                    Roach_RightMtrSpeed(RightMotorSpeed);
+                    Run_TurnOffset();
                     current_state = Moving_Forward;
                     break;
             }
@@ -134,14 +152,14 @@ void Run_RoachStateMachine(Event event)
         case Reversing:
             switch (event) {
                 case NAV_TIMER_EXPIRED:
-                    if (lastDirection == Right) {
-                        Roach_LeftMtrSpeed(-100);
-                        Roach_RightMtrSpeed(100);
+                    if (lastBumper == Left) {
+                        Roach_LeftMtrSpeed(-LeftMotorSpeed);
+                        Roach_RightMtrSpeed(RightMotorSpeed);
                         current_state = WaitAfterReversing;
                         TIMERS_InitTimer(0, reverseTurnTime);
-                    } else if (lastDirection == Left) {
-                        Roach_LeftMtrSpeed(100);
-                        Roach_RightMtrSpeed(-100);
+                    } else if (lastBumper == Right) {
+                        Roach_LeftMtrSpeed(LeftMotorSpeed);
+                        Roach_RightMtrSpeed(-RightMotorSpeed);
                         current_state = WaitAfterReversing;
                         TIMERS_InitTimer(0, reverseTurnTime);
 
@@ -149,8 +167,8 @@ void Run_RoachStateMachine(Event event)
                     break;
                 case REAR_RIGHT_BUMP_PRESSED:
                 case REAR_LEFT_BUMP_PRESSED:
-                    Roach_LeftMtrSpeed(100);
-                    Roach_RightMtrSpeed(100);
+                    Run_TurnOffset();
+                    
                     current_state = Moving_Forward;
                     break;
             }
@@ -158,8 +176,7 @@ void Run_RoachStateMachine(Event event)
         
         case WaitAfterReversing:
             if (event == NAV_TIMER_EXPIRED) {
-                Roach_LeftMtrSpeed(100);
-                Roach_RightMtrSpeed(100);
+                Run_TurnOffset();
                 current_state = Moving_Forward;
             }
     }
